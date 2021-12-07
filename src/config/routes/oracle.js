@@ -11,6 +11,4 @@ routes.get('/getResumenOficina', (req,res)=>{	ctrl.getResumenOficina(req, res)  
 
 
 
-
-
 module.exports = routes;

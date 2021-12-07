@@ -5,8 +5,8 @@ const db = require(__dirDBOracle);
 const getProveedores = async (req, res) => {
     db.getResultCursor(
         dbConfig.ppferi,
-        `begin sasdasdasddasPF_TR_TRANSPORTE_PROCESOS.SP_GET_MAILS( :p_id_proveedor, :p_cursor); end; `,
-        {   p_id_proveedor  : 1014404,
+        `begin PF_TR_TRANSPORTE_PROCESOS.SP_GET_MAILS( :p_id_proveedor, :p_cursor); end; `,
+        {   p_id_proveedor  : req.params.id,
             p_cursor        : { type: db.oracledb.CURSOR, dir: db.oracledb.BIND_OUT }
         },
         res
