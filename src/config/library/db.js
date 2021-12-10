@@ -3,14 +3,14 @@ const oracledb = require('oracledb')
 const dbConfig = require(__dirDB);
 
 let conn
-
+let log = new Log();
 
 const getResultCursor = async (database, statement, binds, res) => {
-  let log = new Log();
+
   conn = await oracledb.getConnection(database); // se conecta a la base de datos enviada como parametro
   conn.execute(statement, binds, { outFormat: oracledb.OUT_FORMAT_OBJECT }, (err, result) => {
     if (err) {
-      log.setProperties({user: 1099,process: statement,type: 'ERROR',error: err + ", DataBase:" + database.connectString});
+      log.setProperties({ user: 1099, process: statement, type: 'ERROR', error: err + ", DataBase:" + database.connectString });
       res.status(200).json(log.save(res));
       // res.status(200).json({ message: 'Error sentencia cursor ', error: err + ", DataBase:" + database.connectString })
       console.error(err);
@@ -25,7 +25,7 @@ const getResultCursor = async (database, statement, binds, res) => {
         conn.close()
       } catch (error) {
         // res.status(200).json({ message: 'Error sentencia cursor ', error: err + "JJ" })
-        log.setProperties({user: 1099, process: statement,type: 'ERROR',error: err + ", DataBase:" + database.connectString});
+        log.setProperties({ user: 1099, process: statement, type: 'ERROR', error: err + ", DataBase:" + database.connectString });
         res.status(200).json(log.save(res));
         console.error(err)
       }
@@ -35,20 +35,43 @@ const getResultCursor = async (database, statement, binds, res) => {
 }
 
 const execProcedure = async (database, statement, bind, res) => {
-  connection = await oracledb.getConnection(database);
-  connection.execute(statement, bind, { outFormat: oracledb.OUT_FORMAT_OBJECT }, (err, result) => {
+  conn = await oracledb.getConnection(database);
+  conn.execute(statement, bind, { outFormat: oracledb.OUT_FORMAT_OBJECT }, (err, result) => {
     if (err) {
-      log.setProperties({user: 1099,process: statement,type: 'ERROR',error: err + ", DataBase:" + database.connectString});
+      log.setProperties({ user: 1099, process: statement, type: 'ERROR', error: err + ", DataBase:" + database.connectString });
       res.status(200).json(log.save(res));
       console.error(err)
     } else {
       res.json(result.rows)
     }
-    if (connection) {
+    if (conn) {
       try {
-        connection.close()
+        conn.close()
       } catch (error) {
-        log.setProperties({user: 1099,process: statement,type: 'ERROR',error: err + ", DataBase:" + database.connectString});
+        log.setProperties({ user: 1099, process: statement, type: 'ERROR', error: err + ", DataBase:" + database.connectString });
+        res.status(200).json(log.save(res));
+        console.error(err)
+      }
+    }
+  })
+}
+
+const execMany = async (database, statement, bind, options, res) => {
+  conn = await oracledb.getConnection(database);
+  // const result = await connection.executeMany(sql, binds, options);
+  conn.executeMany(statement, bind, options, (err, result) => {
+    if (err) {
+      log.setProperties({ user: 1099, process: statement, type: 'ERROR', error: err + ", DataBase:" + database.connectString });
+      res.status(200).json(log.save(res));
+      console.error(err.batchErrors)
+    } else {
+      res.json(result.batchErrors);
+    }
+    if (conn) {
+      try {
+        conn.close()
+      } catch (error) {
+        log.setProperties({ user: 1099, process: statement, type: 'ERROR', error: err + ", DataBase:" + database.connectString });
         res.status(200).json(log.save(res));
         console.error(err)
       }
@@ -59,6 +82,7 @@ const execProcedure = async (database, statement, bind, res) => {
 module.exports = {
   getResultCursor,
   execProcedure,
+  execMany,
   oracledb,
   dbConfig
 }
