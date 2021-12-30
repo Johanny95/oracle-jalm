@@ -16,8 +16,8 @@ const getResultCursor = async (database, statement, binds, res) => {
       console.error(err);
     } else {
       const resultSet = result.outBinds.p_cursor
-      resultSet.getRows().then(rows => {
-        res.status(200).json({ data: rows })
+      resultSet.getRows().then( rows => { 
+        res.status(200).json( rows )
       })
     }
     if (conn) {

@@ -4,7 +4,13 @@ routes.get('/', (req,res)=>{res.status(200).json(
 	{messaje:'Estoy en el config/routes/index.js.',url: 'http://localhost:8080/' })})
 
 
+routes.post('/test_api', (req,res)=>{ 
+	res.status(200).json({messaje:'json procesado bien' })
+	console.log(req.body);
+})
+
 routes.use('/oracle', require('./oracle')) // => http://localhost:8080/oracle
+routes.use('/articulo', require('./articulo')) // => http://localhost:8080/articulo
 /*
 	http://localhost:8080/              => {"messaje":"Estoy en el routes/index.js."}
 	http://localhost:8080/oracle        => {"messaje":"Estoy en el modulos/crud/routesOracle.js"}
