@@ -1,5 +1,5 @@
 //server.js -> index.js -> routes.js
-
+console.clear();
 global.__baseDir = __dirname;
 global.__dirDB = __baseDir + '/src/config/database/config.js';
 global.__dirDBOracle = __baseDir + '/src/config/library/db.js';
@@ -8,8 +8,9 @@ global.__baseDirCtl = __baseDir + '/src/controllers/';
 global.__baseDirModel = __baseDir + '/src/models/';
 global.__baseDirClass = __baseDir + '/src/class/';
 
-global.whitelist = ['http://panel.mispymes.cl'
-  , 'http://gis.mispymes.cl'
+global.whitelist = ['http://panel.mispymes.cl', 
+                    'http://gis.mispymes.cl',
+                    'http://mif-manhattan'
 ]
 
 //Validaciones express
@@ -45,11 +46,11 @@ const helmet = require('helmet')
 // convierte la respuesta en formato utilizable
 app.use(helmet());
 
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json({limit: "50mb"}));
+app.use(bodyParser.urlencoded({ limit: "50mb", extended: true, parameterLimit:50000 }));
+//definir limite de archivos o entradas en nodejs
 // Cualquier peticion pasa por auth.checkHeaders
 //app.use("/",auth.checkHeaders)
-
 
 const routes = require(__dirRoutes); //usa el index.js
 app.use('/', routes);

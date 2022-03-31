@@ -1,11 +1,14 @@
 const routes = require('express').Router()
+// const fs = require('fs');
+routes.get('/', (req, res) => {
+	res.status(200).json(
+		{ messaje: 'Estoy en el config/routes/index.js.', url: 'http://localhost:8080/' })
+})
 
-routes.get('/', (req,res)=>{res.status(200).json(
-	{messaje:'Estoy en el config/routes/index.js.',url: 'http://localhost:8080/' })})
-
-
-routes.post('/test_api', (req,res)=>{ 
-	res.status(200).json({messaje:'json procesado bien' })
+routes.post('/test_api', (req, res) => {
+	let date = new Date();
+	var hora = date.getHours() + ':' + date.getMinutes() + ':' + date.getSeconds();
+	res.status(200).json({ messaje: 'json procesado bien', hora: hora });
 	console.log(req.body);
 })
 
